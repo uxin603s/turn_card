@@ -1,0 +1,85 @@
+<!doctype html>
+<html style="height:100%;">
+<head>
+	
+	<!--
+	<script src="Turn.min.js"></script>
+	-->
+	
+	<script src="Canvas.js"></script>
+	<script src="Vector.js"></script>
+	<script src="Turn/Turn.js"></script>
+	<script src="Turn/Main.js"></script>
+	<script src="Turn/Mouse.js"></script>
+	<script src="Turn/work.js"></script>
+	<script src="Turn/rnd_turn.js"></script>
+	<script src="Turn/TurnAnimation.js"></script>
+	
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
+</head>
+
+<body style="background-color:green">
+	<button id="auto_turn_once"  >翻一次</button>
+	<script >
+	//uglifyjs Canvas.js Vector.js Turn/Turn.js Turn/Main.js Turn/Mouse.js Turn/work.js Turn/rnd_turn.js  -c --mangle -o Turn.min.js
+		(function(){
+			window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+			window.cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+		})();
+		
+		var head=[1,21,41,61];
+		//73
+		var cardno_list=[];
+		for(var i=0;i<head.length;i++){
+			for(var j=0;j<13;j++){
+				var num=(head[i]+j)+"";
+				if(num.length==1){
+					num="0"+num;
+				}
+				cardno_list.push(num)
+			}
+		}
+		var card_animation_array=[];
+		for(var i=0;i<1;i++){
+			var rnd=(cardno_list.length*Math.random())>>0;
+			var cardno=cardno_list.splice(rnd,1).pop();		
+			var card=new Turn({
+				transform:0.449074,
+				width:200,//200
+				height:300,//320
+				images:[
+					'../../images/pokercard/poker_BACK2.png',
+					'../../images/pokercard/poker_'+cardno+'.png',			
+					'../../images/pokercard/finger.png',
+				],
+			})
+			.init(function(a){
+				var div=document.createElement("div");
+				div.appendChild(a.canvas);	
+				div.style="transform: scale(0.448958, 0.449074);transform-origin: 0 0;"
+				document.body.appendChild(div);
+				// div.style="width:"+a.width+"px;height:"+a.height+"px;display:inline-block;position: relative;";
+				// a.canvas.style="z-index:-1;position:absolute;left:-"+a.padding+"px;top:-"+a.padding+"px;display:block;";			
+			});		
+			card_animation_array.push(function(card){
+				card.rnd_turn({
+					// mobile:option.mobile,
+					// rnd_index:option.rnd_index,
+					
+				});		
+			}.bind(null,card));
+		}
+		
+		document.querySelector("#auto_turn_once").addEventListener("click",function(card_animation_array){
+			var rnd_index=(Math.random()*8)>>0;
+			//0-8 左到右,上到下 毫秒數	
+			for(var i=0;i<card_animation_array.length;i++){
+				card_animation_array[i]();
+					
+			}	
+		}.bind(this,card_animation_array));
+	</script>
+	<div id="gogo"></div>
+</body>
+</html>
